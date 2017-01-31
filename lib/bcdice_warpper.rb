@@ -5,14 +5,14 @@ require 'cgi'
 require 'bcdice/src/bcdiceCore.rb'
 require 'bcdice/src/configBcDice.rb'
 
-class AzusaBCDiceMaker < BCDiceMaker
+class DiscordBCDiceMaker < BCDiceMaker
     def newBcDice
-        bcdice = OnsetBCDice.new(self, @cardTrader, @diceBot, @counterInfos, @tableFileData)
+        bcdice = DiscordBCDice.new(self, @cardTrader, @diceBot, @counterInfos, @tableFileData)
         return bcdice
     end
 end
 
-class AzusaBCDice < BCDice
+class DiscordBCDice < BCDice
 
     def setNick(nick)
         @nick_e = nick

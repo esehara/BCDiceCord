@@ -8,7 +8,7 @@ require 'db.rb'
 
 DATABASE = __dir__+"/database.sqlite"
 
-bcdice = AzusaBCDiceMaker.new.newBcDice
+bcdice = DiscordBCDiceMaker.new.newBcDice
 db = Sequel.sqlite(DATABASE)
 
 # load Discord bot clientID and token
