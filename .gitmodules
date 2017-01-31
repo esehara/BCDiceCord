@@ -1,0 +1,3 @@
+[submodule "lib/bcdice"]
+	path = lib/bcdice
+	url = https://github.com/torgtaitai/BCDice
