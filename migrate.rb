@@ -2,6 +2,8 @@
 require 'sequel'
 require 'fileutils'
 
+# migrate script
+
 DBNAME = __dir__+'/database.sqlite'
 
 unless(File.exist?(DBNAME))

@@ -11,6 +11,8 @@ DATABASE = __dir__+"/database.sqlite"
 bcdice = AzusaBCDiceMaker.new.newBcDice
 db = Sequel.sqlite(DATABASE)
 
+# load Discord bot clientID and token
+# first line: client_id, second line: token
 key = []
 File.open("./token.txt").each_line do |line|
     key.push(line)
@@ -18,6 +20,7 @@ end
 
 bot = Discordrb::Bot.new client_id: key[0].to_i, token: key[1]
 
+# set system event
 bot.message(contains: "set:") do |eve|
     system = eve.text.slice("set:")
     unless bcdice.validSystem?(txt)
@@ -34,6 +37,7 @@ bot.message(contains: "set:") do |eve|
     end
 end
 
+# dice roll event
 bot.message(containing: not!("set:")) do |eve|
     bcdice.setNick(eve.user.name)
     system = db.where(:channel_id => eve.channel.id).get(:system)
