@@ -9,7 +9,7 @@ require 'db.rb'
 DATABASE = __dir__+"/database.sqlite"
 
 bcdice = DiscordBCDiceMaker.new.newBcDice
-db = Sequel.sqlite(DATABASE)
+db = Sequel.sqlite(DATABASE)[:channels]
 
 # load Discord bot clientID and token
 # first line: client_id, second line: token
