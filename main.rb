@@ -1,15 +1,13 @@
 #!/usr/bin/ruby -Ku
 
-$LOAD_PATH.push(__dir__)
 require 'discordrb'
 require 'sequel'
-require 'bcdice_wrapper.rb'
-require 'db.rb'
+require_relative 'lib/bcdice_wrapper.rb'
 
 DATABASE = __dir__+"/database.sqlite"
 
 bcdice = DiscordBCDiceMaker.new.newBcDice
-db = Sequel.sqlite(DATABASE)[:channels]
+db = Sequel.sqlite(DATABASE)[:servers]
 
 # load Discord bot clientID and token
 # first line: client_id, second line: token
@@ -20,6 +18,18 @@ end
 
 bot = Discordrb::Bot.new client_id: key[0].to_i, token: key[1]
 
+# server invited event
+bot.server_create do |eve|
+    id = eve.server.id
+    db.insert(:server_id=>id, :system=>"None")
+end
+
+# server kicked event
+bot.server_delete do |eve|
+    id = eve.server.id
+    db.where(:server_id=>id).delete
+end
+
 # set system event
 bot.message(contains: "set:") do |eve|
     system = eve.text.slice("set:")
@@ -27,8 +37,8 @@ bot.message(contains: "set:") do |eve|
         system = "None"
     end
 
-    db.where(:channel_id =>eve.channel.id)
-        .update(:channel_id=>eve.channel.id, :system=>system)
+    db.where(:server_id =>eve.server.id)
+        .update(:server_id=>eve.server.id, :system=>system)
     
     if(system == "None")
         eve.respond "#{eve.user.name}:ダイスが解除されました"
@@ -40,7 +50,7 @@ end
 # dice roll event
 bot.message(containing: not!("set:")) do |eve|
     bcdice.setNick(eve.user.name)
-    system = db.where(:channel_id => eve.channel.id).get(:system)
+    system = db.where(:server_id => eve.server.id).get(:system)
     bcdice.setGameByTitle(system)
     bcdice.setMessage(eve.text)
     hoge, foo = bcdice.dice_command

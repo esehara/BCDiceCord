@@ -1,9 +1,10 @@
 #!/usr/bin/env ruby -Ku
 #--*-coding:utf-8-*--
 
+$LOAD_PATH << __dir__+"/bcdice/src/"
 require 'cgi'
-require 'bcdice/src/bcdiceCore.rb'
-require 'bcdice/src/configBcDice.rb'
+require_relative 'bcdice/src/bcdiceCore.rb'
+require_relative 'bcdice/src/configBcDice.rb'
 
 class DiscordBCDiceMaker < BCDiceMaker
     def newBcDice

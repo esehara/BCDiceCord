@@ -10,7 +10,7 @@ unless(File.exist?(DBNAME))
     FileUtils.touch(DBNAME)
 end
 
-Sequel.sqlite(DBNAME).create_table :channels do
-    Integer :channel_id, :primary_key=>true
+Sequel.sqlite(DBNAME).create_table :servers do
+    Integer :server_id, :primary_key=>true
     String :system, :text=>true
 end
