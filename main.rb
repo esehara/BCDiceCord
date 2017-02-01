@@ -7,7 +7,14 @@ require_relative 'lib/bcdice_wrapper.rb'
 DATABASE = __dir__+"/database.sqlite"
 
 bcdice = DiscordBCDiceMaker.new.newBcDice
-db = Sequel.sqlite(DATABASE)[:servers]
+
+begin
+    db = Sequel.sqlite(DATABASE)[:servers]
+rescue => err
+    puts err.message
+    puts "maybe, you had not migration...had you?"
+    exit 1
+end
 
 # load Discord bot clientID and token
 # first line: client_id, second line: token
