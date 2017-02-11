@@ -54,6 +54,12 @@ bot.message(contains: "set:") do |eve|
     end
 end
 
+# show now system event
+bot.message(contains: "system") do |eve|
+    nowSystem = db.where(:server_id =>eve.server.id).select(:system).get
+    eve.respond "nowSystem"
+end
+
 # dice roll event
 bot.message(containing: not!("set:")) do |eve|
     bcdice.setNick(eve.user.name)
