@@ -8,14 +8,11 @@ It's simple!
 ```sh
 bundle install #install dependency
 ruby migrate.rb #database(sqlite) setup. DO NOT forget!!!!!
-vim token.txt # setup discord bot token. first line: bot clientID, second line: bot token
+vi token.txt # setup discord bot token. first line: bot clientID, second line: bot token
 ruby main.rb #start Bot.
 ```
 
-Oh, are you emacs user?
-sorry, this software is only to vim user...
-
-if you nano user, let's use vim!
+By the way, i recommend for you to edit with Vim. ;) 
 
 ## 日本語でOK
 上の手順でセットアップしてください
