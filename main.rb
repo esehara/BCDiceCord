@@ -60,9 +60,9 @@ bot.message(containing: not!("set:")) do |eve|
     system = db.where(:server_id => eve.server.id).get(:system)
     bcdice.setGameByTitle(system)
     bcdice.setMessage(eve.text)
-    hoge, foo = bcdice.dice_command
-    if(hoge != "")
-        eve.respond hoge
+    message, _ = bcdice.dice_command
+    if (message != "" || message != "1")
+        eve.respond message
     end
 end
 
