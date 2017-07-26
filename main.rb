@@ -23,7 +23,7 @@ File.open("./token.txt").each_line do |line|
     key.push(line)
 end
 
-bot = Discordrb::Bot.new client_id: key[0].to_i, token: key[1]
+bot = Discordrb::Bot.new client_id: key[0].to_i, token: key[1].gsub(/\n/, '')
 
 # server invited event
 bot.server_create do |eve|
@@ -37,16 +37,20 @@ bot.server_delete do |eve|
     db.where(:server_id=>id).delete
 end
 
+# Hello, bot
+bot.message(contains: "こんにちは") do |eve|
+  eve.respond "#{eve.user.name}さん、こんにちは"
+end
+
 # set system event
 bot.message(contains: "set:") do |eve|
-    system = eve.text.slice("set:")
-    unless bcdice.validSystem?(txt)
+    system = (/^set:( *)(.+)/.match('set:    DiseBot'))[2]
+    unless bcdice.validSystem?(system)
         system = "None"
     end
-
     db.where(:server_id =>eve.server.id)
-        .update(:server_id=>eve.server.id, :system=>system)
-    
+      .update(:server_id=>eve.server.id, :system=>system)
+
     if(system == "None")
         eve.respond "#{eve.user.name}:ダイスが解除されました"
     else
