@@ -44,7 +44,7 @@ end
 
 # set system event
 bot.message(contains: "set:") do |eve|
-    system = (/^set:( *)(.+)/.match('set:    DiseBot'))[2]
+    system = (/^set:( *)(.+)/.match(eve.text))[2].gsub(/\n/, '')
     unless bcdice.validSystem?(system)
         system = "None"
     end
