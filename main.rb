@@ -65,7 +65,7 @@ bot.message(containing: not!("set:")) do |eve|
     bcdice.setGameByTitle(system)
     bcdice.setMessage(eve.text)
     message, _ = bcdice.dice_command
-    if (message != "" || message != "1")
+    if (message != "" && message != "1")
         eve.respond message
     end
 end
