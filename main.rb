@@ -23,7 +23,7 @@ File.open("./token.txt").each_line do |line|
     key.push(line)
 end
 
-bot = Discordrb::Bot.new client_id: key[0].to_i, token: key[1]
+bot = Discordrb::Bot.new client_id: key[0].to_i, token: key[1].gsub(/\n/, '')
 
 # server invited event
 bot.server_create do |eve|
@@ -37,31 +37,39 @@ bot.server_delete do |eve|
     db.where(:server_id=>id).delete
 end
 
+# Hello, bot
+bot.message(contains: "こんにちは") do |eve|
+  eve.respond "#{eve.user.name}さん、こんにちは"
+end
+
 # set system event
 bot.message(contains: "set:") do |eve|
-    system = eve.text.slice("set:")
-    unless bcdice.validSystem?(txt)
+  system = (/^set:( *)(.+)/.match(eve.text))[2]
+    unless bcdice.validSystem?(system)
         system = "None"
     end
-
-    db.where(:server_id =>eve.server.id)
-        .update(:server_id=>eve.server.id, :system=>system)
-    
-    if(system == "None")
-        eve.respond "#{eve.user.name}:ダイスが解除されました"
+    if system == "None"
+      eve.respond "#{eve.user.name}:ダイスが解除されました"
     else
-        eve.respond "#{eve.user.name}:ゲームが#{system}にセットされました"
+      system.gsub!(/\n/, '')
+      test_get_data = db.where(:server_id => eve.server.id).get(:system)
+      if test_get_data.nil?
+        db.insert(:server_id => eve.server.id, :system => system)
+      else
+        db.update(:server_id => eve.server.id, :system => system)
+      end
+      eve.respond "#{eve.user.name}:ゲームが#{system}にセットされました"
     end
 end
 
 # dice roll event
 bot.message(containing: not!("set:")) do |eve|
     bcdice.setNick(eve.user.name)
-    system = db.where(:server_id => eve.server.id).get(:system)
+    system = db.first(:server_id => eve.server.id)[:system]
     bcdice.setGameByTitle(system)
     bcdice.setMessage(eve.text)
     message, _ = bcdice.dice_command
-    if (message != "" || message != "1")
+    if (message != "" && message != "1")
         eve.respond message
     end
 end
