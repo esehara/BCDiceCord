@@ -15,6 +15,7 @@ end
 
 class DiscordBCDice < BCDice
     attr_reader :systemlist
+
     def after_initialize
       @systemlist = {}
       $allGameTypes.each do |s|
@@ -29,8 +30,8 @@ class DiscordBCDice < BCDice
         @nick_e = nick
     end
 
-    def self.validSystem?(system)
-        $allGameTypes.include?(system) || $allGameTypes.include?(@systemlist[system_name])
+    def validSystem?(system)
+        $allGameTypes.include?(system) || $allGameTypes.include?(@systemlist[system])
     end
 
     def validSystemlist

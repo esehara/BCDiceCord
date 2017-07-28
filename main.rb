@@ -54,9 +54,14 @@ end
 # set system event
 bot.message(contains: "set:") do |eve|
   system = (/^set:( *)(.+)/.match(eve.text))[2]
-    unless DiscordBCDice.validSystem?(system)
-        system = "None"
+    unless bcdice.validSystem?(system)
+      system = "None"
+    else
+      unless bcdice.systemlist[system].nil?
+        system = bcdice.systemlist[system]
+      end
     end
+
     if system == "None"
       eve.respond "#{eve.user.name}:ダイスが解除されました"
     else
@@ -78,6 +83,11 @@ bot.message(containing: not!("set:")) do |eve|
       system = "DiceBot"
     else
       system = db.first(:server_id => eve.server.id)
+      if system.nil?
+        system = "DiceBot"
+      else
+        system = system[:system]
+      end
     end
     bcdice.setGameByTitle(system)
     bcdice.setMessage(eve.text)
