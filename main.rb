@@ -66,11 +66,11 @@ bot.message(contains: "set:") do |eve|
       eve.respond "#{eve.user.name}:ダイスが解除されました"
     else
       system.gsub!(/\n/, '')
-      test_get_data = db.where(:server_id => eve.server.id).get(:system)
+      test_get_data = db.first(:server_id => eve.server.id)
       if test_get_data.nil?
         db.insert(:server_id => eve.server.id, :system => system)
       else
-        db.update(:server_id => eve.server.id, :system => system)
+        db.where(:server_id => eve.server.id).update(:system => system)
       end
       eve.respond "#{eve.user.name}:ゲームが#{system}にセットされました"
     end
