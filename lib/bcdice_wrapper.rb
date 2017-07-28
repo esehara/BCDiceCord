@@ -40,6 +40,10 @@ class DiscordBCDice < BCDice
       end
     end
 
+    def getHelpMessage
+      @diceBot.getHelpMessage
+    end
+
     private
     def replace_systemName(system_name)
       system_name.gsub!(/[_|!]/, "")
