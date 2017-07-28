@@ -7,6 +7,7 @@ require_relative 'lib/bcdice_wrapper.rb'
 DATABASE = __dir__+"/database.sqlite"
 
 bcdice = DiscordBCDiceMaker.new.newBcDice
+bcdice.after_initialize
 
 begin
     db = Sequel.sqlite(DATABASE)[:servers]
@@ -42,10 +43,18 @@ bot.message(contains: "こんにちは") do |eve|
   eve.respond "#{eve.user.name}さん、こんにちは"
 end
 
+bot.message(with_text: "!systemlist") do |eve|
+  help_lines = bcdice.validSystemlist
+  help_lines_before = help_lines[0..help_lines.size / 2].join("\n")
+  help_lines_after = help_lines[(help_lines.size / 2)..help_lines.size].join("\n")
+  eve.user.pm("```#{help_lines_before}```")
+  eve.user.pm("```#{help_lines_after}```")
+end
+
 # set system event
 bot.message(contains: "set:") do |eve|
   system = (/^set:( *)(.+)/.match(eve.text))[2]
-    unless bcdice.validSystem?(system)
+    unless DiscordBCDice.validSystem?(system)
         system = "None"
     end
     if system == "None"
@@ -65,7 +74,11 @@ end
 # dice roll event
 bot.message(containing: not!("set:")) do |eve|
     bcdice.setNick(eve.user.name)
-    system = db.first(:server_id => eve.server.id)[:system]
+    if eve.server.nil?
+      system = "DiceBot"
+    else
+      system = db.first(:server_id => eve.server.id)
+    end
     bcdice.setGameByTitle(system)
     bcdice.setMessage(eve.text)
     message, _ = bcdice.dice_command
